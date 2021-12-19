@@ -318,9 +318,9 @@ contract ERC20 is IERC20 {
      * All three of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor (string memory name, string memory symbol) {
-        _name = name;
-        _symbol = symbol;
+    constructor (string memory name_, string memory symbol_) {
+        _name = name_;
+        _symbol = symbol_;
         decimals = 18;
     }
 
@@ -610,30 +610,30 @@ library SafeERC20 {
     }
 }
 
-interface IMEMO is IERC20 {
+interface IsGSD is IERC20 {
     function index() external view returns ( uint );
 }
 
-contract wMEMO is ERC20 {
-    using SafeERC20 for IMEMO;
+contract wGSD is ERC20 {
+    using SafeERC20 for IsGSD;
     using LowGasSafeMath for uint;
 
-    IMEMO public immutable MEMO;
-    event Wrap(address indexed recipient, uint256 amountMemo, uint256 amountWmemo);
-    event UnWrap(address indexed recipient,uint256 amountWmemo, uint256 amountMemo);
+    IsGSD public immutable sGSD;
+    event Wrap(address indexed recipient, uint256 amountsGSD, uint256 amountwGSD);
+    event UnWrap(address indexed recipient,uint256 amountwGSD, uint256 amountsGSD);
 
-    constructor( address _MEMO ) ERC20( 'Wrapped MEMO', 'wMEMO' ) {
-        require( _MEMO != address(0) );
-        MEMO = IMEMO(_MEMO);
+    constructor( address _sGSD ) ERC20( 'Wrapped sGSD', 'wGSD' ) {
+        require( _sGSD != address(0) );
+        sGSD = IsGSD(_sGSD);
     }
 
     /**
-        @notice wrap MEMO
+        @notice wrap sGSD
         @param _amount uint
         @return uint
      */
     function wrap( uint _amount ) external returns ( uint ) {
-        MEMO.safeTransferFrom( msg.sender, address(this), _amount );
+        sGSD.safeTransferFrom( msg.sender, address(this), _amount );
         
         uint value = MEMOTowMEMO( _amount );
         _mint( msg.sender, value );
@@ -642,7 +642,7 @@ contract wMEMO is ERC20 {
     }
 
     /**
-        @notice unwrap MEMO
+        @notice unwrap sGSD
         @param _amount uint
         @return uint
      */
@@ -650,27 +650,27 @@ contract wMEMO is ERC20 {
         _burn( msg.sender, _amount );
 
         uint value = wMEMOToMEMO( _amount );
-        MEMO.safeTransfer( msg.sender, value );
+        sGSD.safeTransfer( msg.sender, value );
         emit UnWrap(msg.sender, _amount, value);
         return value;
     }
 
     /**
-        @notice converts wMEMO amount to MEMO
+        @notice converts wGSD amount to sGSD
         @param _amount uint
         @return uint
      */
     function wMEMOToMEMO( uint _amount ) public view returns ( uint ) {
-        return _amount.mul( MEMO.index() ).div( 10 ** decimals );
+        return _amount.mul( sGSD.index() ).div( 10 ** decimals );
     }
 
     /**
-        @notice converts MEMO amount to wMEMO
+        @notice converts sGSD amount to wGSD
         @param _amount uint
         @return uint
      */
     function MEMOTowMEMO( uint _amount ) public view returns ( uint ) {
-        return _amount.mul( 10 ** decimals ).div( MEMO.index() );
+        return _amount.mul( 10 ** decimals ).div( sGSD.index() );
     }
 
 }

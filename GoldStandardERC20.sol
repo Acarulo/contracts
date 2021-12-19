@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+// GSD.
 pragma solidity 0.7.5;
 
 interface IERC20 {
@@ -387,11 +388,11 @@ contract VaultOwned is Ownable {
 
 }
 
-contract TimeERC20Token is ERC20Permit, VaultOwned {
+contract GoldstandardERC20Token is ERC20Permit, VaultOwned {
 
     using LowGasSafeMath for uint256;
 
-    constructor() ERC20("Time", "TIME", 9) {
+    constructor() ERC20("Gold Standard Token", "GSD", 9) {
     }
 
     function mint(address account_, uint256 amount_) external onlyVault() {

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+// GSD
 pragma solidity 0.7.5;
 
 library LowGasSafeMath {
@@ -372,10 +373,7 @@ interface IERC20 {
   event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-abstract contract ERC20
-  is 
-    IERC20
-  {
+abstract contract ERC20 is IERC20 {
 
   using LowGasSafeMath for uint256;
 
@@ -839,7 +837,7 @@ contract Ownable is OwnableData {
     }
 }
 
-contract MEMOries is ERC20Permit, Ownable {
+contract sGoldStandard is ERC20Permit, Ownable {
 
     using LowGasSafeMath for uint256;
 
@@ -884,7 +882,7 @@ contract MEMOries is ERC20Permit, Ownable {
 
     mapping ( address => mapping ( address => uint256 ) ) private _allowedValue;
 
-    constructor() ERC20("MEMOries", "MEMO", 9) ERC20Permit() {
+    constructor() ERC20("Staked Gold Standard", "sGSD", 9) ERC20Permit() {
         initializer = msg.sender;
         _totalSupply = INITIAL_FRAGMENTS_SUPPLY;
         _gonsPerFragment = TOTAL_GONS.div(_totalSupply);
@@ -910,7 +908,7 @@ contract MEMOries is ERC20Permit, Ownable {
     }
 
     /**
-        @notice increases MEMOries supply to increase staking balances relative to profit_
+        @notice increases sGSD supply to increase staking balances relative to profit_
         @param profit_ uint256
         @return uint256
      */
@@ -979,7 +977,7 @@ contract MEMOries is ERC20Permit, Ownable {
         return gons.div( _gonsPerFragment );
     }
 
-    // Staking contract holds excess MEMOries
+    // Staking contract holds excess sGSD
     function circulatingSupply() public view returns ( uint ) {
         return _totalSupply.sub( balanceOf( stakingContract ) );
     }

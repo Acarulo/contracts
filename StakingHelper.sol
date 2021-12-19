@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+// GSD
 pragma solidity 0.7.5;
-
 
 interface IERC20 {
     function decimals() external view returns (uint8);
@@ -84,18 +84,18 @@ contract StakingHelper {
     event LogStake(address indexed recipient, uint amount);
 
     IStaking public immutable staking;
-    IERC20 public immutable Time;
+    IERC20 public immutable GSD;
 
-    constructor ( address _staking, address _Time ) {
+    constructor ( address _staking, address _GSD ) {
         require( _staking != address(0) );
         staking = IStaking(_staking);
-        require( _Time != address(0) );
-        Time = IERC20(_Time);
+        require( _GSD != address(0) );
+        GSD = IERC20(_GSD);
     }
 
     function stake( uint _amount, address recipient ) external {
-        Time.transferFrom( msg.sender, address(this), _amount );
-        Time.approve( address(staking), _amount );
+        GSD.transferFrom( msg.sender, address(this), _amount );
+        GSD.approve( address(staking), _amount );
         staking.stake( _amount, recipient );
         staking.claim( recipient );
         emit LogStake(recipient, _amount);
